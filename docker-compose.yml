@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  service1:
+    build:
+      context: docker/django
+      dockerfile: Dockerfile
+    environment:
+      - .env
+    volumes:
+      - "../volumes/django/:/app"
+
+  service2:
+    build:
+      context: docker/ganache
+      dockerfile: Dockerfile
+    environment:
+      - .env
+    volumes:
+      - "../volumes/ganache/:/blockchain"
