@@ -9,6 +9,7 @@ services:
       - .env
     volumes:
       - "../volumes/django/:/app"
+      
 
   service2:
     build:
