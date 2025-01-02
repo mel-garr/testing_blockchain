@@ -1,21 +1,54 @@
-version: '3.8'
+# version: '3.8'
 
-services:
-  service1:
-    build:
-      context: docker/django
-      dockerfile: Dockerfile
-    environment:
-      - .env
-    volumes:
-      - "../volumes/django/:/app"
+# services:
+#   service1:
+#     build:
+#       context: docker/django
+#       dockerfile: Dockerfile
+#     environment:
+#       - .env
+#     volumes:
+#       - "../volumes/django/:/app"
       
 
-  service2:
-    build:
-      context: docker/ganache
-      dockerfile: Dockerfile
-    environment:
-      - .env
+#   service2:
+#     build:
+#       context: docker/ganache
+#       dockerfile: Dockerfile
+#     environment:
+#       - .env
+#     volumes:
+#       - "../volumes/ganache/:/blockchain"
+# version: '3.8'
+
+# services:
+#   web:
+#     build: docker/django/.
+#     ports:
+#       - "8000:8000"
+#     volumes:
+#       - .:/app
+#     environment:
+#       - INFURA_URL=${INFURA_URL}
+#       - PRIVATE_KEY=${PRIVATE_KEY}
+#       - ACCOUNT_ADDRESS=${ACCOUNT_ADDRESS}
+#     command: python manage.py runserver 0.0.0.0:8000
+
+services:
+  web:
+    build: docker/django/.
+    ports:
+      - "8000:8000"
     volumes:
-      - "../volumes/ganache/:/blockchain"
+      - .:/app
+
+      # - ./docker/blockblock:/app
+    env_file:
+      - ./.env
+    environment:
+      - INFURA_URL
+    command: |
+      bash -c "
+        echo 'INFURA_URL:' $$INFURA_URL &&
+        python manage.py runserver 0.0.0.0:8000
+      "
