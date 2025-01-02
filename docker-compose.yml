@@ -47,8 +47,4 @@ services:
       - ./.env
     environment:
       - INFURA_URL
-    command: |
-      bash -c "
-        echo 'INFURA_URL:' $$INFURA_URL &&
-        python manage.py runserver 0.0.0.0:8000
-      "
+ 
