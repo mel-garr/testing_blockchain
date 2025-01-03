@@ -39,8 +39,8 @@ services:
     build: docker/django/.
     ports:
       - "8000:8000"
-    volumes:
-      - .:/app
+    # volumes:
+    #   - /app
 
       # - ./docker/blockblock:/app
     env_file:
