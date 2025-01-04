@@ -1,10 +1,41 @@
-# from django.shortcuts import render
-# from django.views.decorators.csrf import csrf_exempt
-# from django.http import JsonResponse
-# from web3 import Web3
-# from web3.providers.eth_tester import EthereumTesterProvider
-# from solcx import compile_source, install_solc
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from web3 import Web3
+from web3.providers.eth_tester import EthereumTesterProvider
+from solcx import compile_source, install_solc
+from .utils import blockchain
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 # from .utils import blockchain
+from solcx import get_installable_solc_versions
+
+@csrf_exempt
+def send_to_back(request):
+    # print(get_installable_solc_versions())
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+    
+    letter = request.POST.get('letter')
+    if not letter:
+        return JsonResponse({'error': 'No letter provided'}, status=400)
+    
+    result = blockchain.store_letter(letter)
+    
+    if result['success']:
+        return JsonResponse({
+            'message': 'Letter stored in the blockchain',
+            'tx_hash': result['tx_hash']
+        })
+    else:
+        return JsonResponse({
+            'error': result['error']
+        }, status=400)
+    
+def home_view(request):
+    return render(request, 'home.html')
 
 # INFURA_URL = 'https://sepolia.infura.io/v3/68535a9d8e6e4f1f92ca21bd25ce1ed5'
 # PRIVAE_KEY =   "c7734089f791f1c724451045ff606ffb0d1591bee61d562aa668a58b4a7466a2"
@@ -30,10 +61,8 @@
 # contract_id, contract_interface = compiled_sol.popitem()
 
 # # Create your views here.
-# def home_view(request):
-#     web = Web3(Web3.HTTPProvider(INFURA_URL))
+    # web = Web3(Web3.HTTPProvider(INFURA_URL))
 
-#     return render(request, 'home.html')
 
 # @csrf_exempt
 # def send_to_back(request):
@@ -52,29 +81,3 @@
 #         return JsonResponse({
 #             'error': result['error']
 #         }, status=400)
-
-
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .utils import blockchain
-
-@csrf_exempt
-def send_to_back(request):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Invalid request method'}, status=405)
-    
-    letter = request.POST.get('letter')
-    if not letter:
-        return JsonResponse({'error': 'No letter provided'}, status=400)
-    
-    result = blockchain.store_letter(letter)
-    
-    if result['success']:
-        return JsonResponse({
-            'message': 'Letter stored in the blockchain',
-            'tx_hash': result['tx_hash']
-        })
-    else:
-        return JsonResponse({
-            'error': result['error']
-        }, status=400)

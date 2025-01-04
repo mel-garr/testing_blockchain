@@ -87,6 +87,15 @@
 from web3 import Web3
 from solcx import compile_source
 from django.conf import settings
+from solcx import compile_source, install_solc
+from solcx import get_installable_solc_versions
+
+try:
+    # Install solc compiler if not already installed
+    install_solc('0.8.28')
+    print('ready to go ?')
+except Exception as e:
+    print(f"Warning: Failed to install solc: {e}")
 
 class BlockchainManager:
     def __init__(self):
